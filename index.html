@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CW Ops Hub | City Wide of The Triad</title>
+<style>
+:root{--red:#D22730;--red-dark:#B01F27;--black:#2D2A26;--grey:#636466;--light:#F5F5F5;
+--border:#E5E5E5;--gold:#E5B423;
+--shadow:0 1px 3px rgba(45,42,38,.08),0 4px 14px rgba(45,42,38,.06);
+--shadow-lift:0 4px 10px rgba(45,42,38,.10),0 10px 28px rgba(45,42,38,.10)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Verdana,'Liberation Sans','DejaVu Sans',Geneva,Tahoma,sans-serif;
+color:var(--black);background:var(--light);font-size:14px;line-height:1.6}
+a{color:var(--red);text-decoration:none}
+.hidden{display:none !important}
+#gate{min-height:100vh;display:flex;align-items:center;justify-content:center;
+background:linear-gradient(180deg,#26231f 0%,var(--black) 70%);padding:20px}
+.gcard{background:#fff;border-radius:14px;box-shadow:var(--shadow-lift);padding:36px 34px;
+max-width:360px;width:100%;text-align:center}
+.gcard .glogo{font-weight:700;font-size:20px;letter-spacing:.02em;margin-bottom:4px}
+.gcard .glogo b{color:var(--red)}
+.gcard .gsub{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+color:var(--grey);margin-bottom:22px}
+.gcard input{width:100%;font-family:inherit;font-size:14px;border:1.5px solid var(--border);
+border-radius:10px;padding:11px 14px;outline:none;margin-bottom:12px}
+.gcard input:focus{border-color:var(--red)}
+.gcard button{width:100%;font-family:inherit;font-size:13px;font-weight:700;letter-spacing:.04em;
+text-transform:uppercase;background:var(--red);color:#fff;border:none;border-radius:10px;
+padding:12px;cursor:pointer}
+.gcard button:hover{background:var(--red-dark)}
+.gcard button:disabled{opacity:.6;cursor:default}
+.gerr{color:var(--red);font-size:12px;font-weight:700;margin-top:10px;min-height:16px}
+.head{background:#fff;position:sticky;top:0;z-index:50;box-shadow:0 1px 8px rgba(45,42,38,.10)}
+.head .bar{max-width:1160px;margin:0 auto;padding:0 20px;height:60px;display:flex;
+align-items:center;gap:14px}
+.head .logo{font-weight:700;font-size:17px;letter-spacing:.01em;white-space:nowrap}
+.head .logo b{color:var(--red)}
+.head .t{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+color:var(--grey);border-left:2px solid var(--border);padding-left:14px;white-space:nowrap}
+.hsearch{flex:1;display:flex;max-width:360px;margin-left:auto;position:relative}
+.hsearch input{width:100%;font-family:inherit;font-size:13px;border:1.5px solid var(--border);
+border-radius:18px;padding:8px 14px;background:var(--light);outline:none}
+.hsearch input:focus{border-color:var(--red);background:#fff}
+.hresults{position:absolute;top:calc(100% + 6px);left:0;right:0;background:#fff;
+border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow-lift);
+max-height:280px;overflow:auto;display:none;z-index:60}
+.hresults.show{display:block}
+.hresults a{display:block;padding:9px 14px;font-size:12.5px;font-weight:700;color:var(--black);border-bottom:1px solid var(--border)}
+.hresults a:last-child{border-bottom:none}
+.hresults a:hover{background:var(--light);color:var(--red)}
+.hresults .none{padding:12px 14px;font-size:12px;color:var(--grey)}
+.head .badge{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+background:var(--black);color:#fff;border-left:3px solid var(--gold);padding:4px 10px;white-space:nowrap}
+.head .out{font-size:11px;font-weight:700;color:var(--grey);cursor:pointer;
+border:1px solid var(--border);border-radius:14px;padding:5px 12px;background:var(--light);white-space:nowrap}
+.head .out:hover{background:var(--red);color:#fff;border-color:var(--red)}
+nav.mainnav{background:var(--black);border-bottom:3px solid var(--red)}
+.nav-in{max-width:1160px;margin:0 auto;padding:0 12px;display:flex;align-items:stretch;
+gap:2px;flex-wrap:wrap}
+.nitem{position:relative;flex:none}
+.nbtn{background:none;border:none;color:#fff;font-family:inherit;font-size:11.5px;font-weight:700;
+letter-spacing:.04em;text-transform:uppercase;padding:12px 13px;display:flex;align-items:center;
+gap:6px;white-space:nowrap;cursor:pointer}
+.nbtn .caret{font-size:8px;opacity:.8}
+.nbtn:hover,.nbtn.open{background:var(--red)}
+.nmenu{display:none;position:absolute;top:100%;left:0;min-width:230px;background:#fff;
+border:1px solid var(--border);border-top:3px solid var(--red);border-radius:0 0 10px 10px;
+box-shadow:var(--shadow-lift);padding:6px 0;z-index:70}
+.nmenu.show{display:block}
+.nmenu a{display:block;font-size:12.5px;font-weight:700;color:var(--black);padding:9px 16px}
+.nmenu a:hover{background:var(--light);color:var(--red)}
+@media(hover:hover){.nitem:hover>.nmenu{display:block}}
+.wrap{max-width:1160px;margin:0 auto;padding:0 20px}
+.hero{position:relative;color:#fff;background:linear-gradient(180deg,#26231f 0%,var(--black) 70%)}
+.hero .wrap{padding-top:32px;padding-bottom:80px}
+.hero h1{font-size:clamp(22px,3.2vw,29px);line-height:1.25}
+.hero h1::after{content:"";display:block;width:56px;height:4px;background:var(--red);
+border-radius:2px;margin-top:11px}
+.hero p{color:#cfcdc9;margin-top:10px;max-width:600px;font-size:13.5px}
+.hero .cities{margin-top:14px;font-size:10.5px;font-weight:700;letter-spacing:.22em;
+text-transform:uppercase;color:#8f8b85}
+.hero .cities b{color:#fff}
+.hero .cities .dot{color:var(--red);padding:0 8px}
+.quick{position:relative;z-index:5;margin-top:-44px}
+.quick .qcard{background:#fff;border:1px solid var(--border);border-radius:14px;
+box-shadow:var(--shadow-lift);padding:16px 18px 14px}
+.quick .qhead{display:flex;align-items:baseline;gap:10px;margin-bottom:10px}
+.quick .qhead h2{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+color:var(--grey)}
+.qrow{display:flex;flex-wrap:wrap;gap:9px}
+.qbtn{position:relative;display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;
+color:var(--black);border:1.5px solid var(--border);border-radius:10px;
+padding:9px 13px;background:#fff;white-space:nowrap}
+.qbtn:hover{border-color:var(--red);color:var(--red);box-shadow:var(--shadow)}
+.qbtn.primary{background:var(--red);border-color:var(--red);color:#fff}
+.feature{margin-top:18px}
+.fcard{display:flex;align-items:center;gap:22px;background:#fff;border:1px solid var(--border);
+border-left:5px solid var(--red);border-radius:14px;box-shadow:var(--shadow);padding:18px 22px;
+flex-wrap:wrap}
+.fcard .ficon{width:44px;height:44px;border-radius:10px;background:var(--red);color:#fff;
+display:flex;align-items:center;justify-content:center;flex:none;font-weight:700;font-size:18px}
+.fcard .ftext{flex:1;min-width:240px}
+.fcard h3{font-size:15px;margin-bottom:2px}
+.fcard p{font-size:12.5px;color:var(--grey)}
+.fcard .fbtns{display:flex;gap:10px;flex-wrap:wrap}
+.fbtn{font-size:12.5px;font-weight:700;border-radius:10px;padding:10px 16px;white-space:nowrap}
+.fbtn.solid{background:var(--red);color:#fff}
+.fbtn.solid:hover{background:var(--red-dark)}
+.fbtn.outline{border:1.5px solid var(--border);color:var(--black)}
+.fbtn.outline:hover{border-color:var(--red);color:var(--red)}
+.tips{margin:34px 0}
+.tips .thead{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+color:var(--grey);margin-bottom:10px}
+.tcard{background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);
+padding:22px 24px}
+.tcard h3{font-size:16px;margin-bottom:8px}
+.tcard p{font-size:13px;color:var(--grey);margin-bottom:6px}
+footer{border-top:1px solid var(--border);padding:22px 0;margin-top:20px}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;
+font-size:11.5px;color:var(--grey)}
+</style>
+</head>
+<body>
+
+<div id="gate">
+  <div class="gcard">
+    <div class="glogo">City Wide <b>of The Triad</b></div>
+    <div class="gsub">Operations Hub &middot; Internal Use Only</div>
+    <input id="pc" type="password" placeholder="Enter passcode" autocomplete="off">
+    <button id="enter">Enter</button>
+    <div class="gerr" id="gerr"></div>
+  </div>
+</div>
+
+<div id="app" class="hidden">
+  <header class="head">
+    <div class="bar">
+      <div class="logo">City Wide <b>Triad</b></div>
+      <div class="t">Ops Hub</div>
+      <div class="hsearch">
+        <input id="search" type="search" placeholder="Find a tool, form, or calculator...">
+        <div class="hresults" id="hresults"></div>
+      </div>
+      <div class="badge">Internal Team Use</div>
+      <a class="out" id="signout" href="#">Sign out</a>
+    </div>
+  </header>
+
+  <nav class="mainnav">
+    <div class="nav-in" id="navin"></div>
+  </nav>
+
+  <section class="hero">
+    <div class="wrap">
+      <h1>City Wide of The Triad &mdash; Operations Hub</h1>
+      <p>Every tool the operations team uses, one page. Use the menus above or the search box to jump straight to what you need.</p>
+      <div class="cities"><b>GREENSBORO</b><span class="dot">&bull;</span><b>WINSTON-SALEM</b><span class="dot">&bull;</span><b>HIGH POINT</b> &nbsp;PROUDLY SERVING THE TRIAD</div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <div class="quick">
+      <div class="qcard">
+        <div class="qhead"><h2>Most Used</h2></div>
+        <div class="qrow" id="qrow"></div>
+      </div>
+    </div>
+
+    <div class="feature">
+      <div class="fcard">
+        <div class="ficon">B</div>
+        <div class="ftext">
+          <h3>Building Information Sheets</h3>
+          <p>One living sheet per account: access, schedule, alarm procedure, locations, tenants, and photos. Placeholder &mdash; link this up to your real sheet library.</p>
+        </div>
+        <div class="fbtns">
+          <a class="fbtn solid" href="#">Browse the Sheet Library</a>
+          <a class="fbtn outline" href="#">New / Update a Sheet</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="tips">
+      <div class="thead">For The Operations Team</div>
+      <div class="tcard">
+        <h3>Placeholder tip / announcement</h3>
+        <p>This space is for team tips, reminders, or announcements &mdash; swap in your own content here.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="wrap">
+      <div>City Wide of The Triad &middot; Operations Hub &middot; Internal use only</div>
+      <div>GREENSBORO &bull; WINSTON-SALEM &bull; HIGH POINT</div>
+    </div>
+  </footer>
+</div>
+
+<script>
+var PASSCODE = "Citywidetriad1";
+var KEY = "cwtriad_pass_ok";
+
+var SECTIONS = [
+  { label:"Work Tickets", links:[
+    {name:"Post an Opportunity", href:"#"},
+    {name:"Live Board", href:"#"},
+    {name:"Submit a Work Ticket", href:"#"}
+  ]},
+  { label:"Vendors", links:[
+    {name:"Vendor Packet Request", href:"#"},
+    {name:"Vendor Resources", href:"#"},
+    {name:"Vendor Onboarding", href:"#"}
+  ]},
+  { label:"Accounts & Buildings", links:[
+    {name:"Building Information Sheets", href:"#"},
+    {name:"New / Update a Sheet", href:"#"},
+    {name:"Account Map", href:"#"}
+  ]},
+  { label:"Pricing & Bids", links:[
+    {name:"Margin Calculator", href:"#"},
+    {name:"Bid Template", href:"#"},
+    {name:"Rate Sheet", href:"#"}
+  ]},
+  { label:"Night Ops", links:[
+    {name:"Night Inspection Form", href:"#"},
+    {name:"Route Sheets", href:"#"},
+    {name:"Incident Report", href:"#"}
+  ]},
+  { label:"Team & Admin", links:[
+    {name:"CW CRM", href:"#"},
+    {name:"Payroll Portal", href:"#"},
+    {name:"Team Directory", href:"#"}
+  ]}
+];
+
+var MOST_USED = [
+  {name:"Post an Opportunity", href:"#", primary:true},
+  {name:"Live Board", href:"#"},
+  {name:"Building Information Sheets", href:"#"},
+  {name:"Margin Calculator", href:"#"}
+];
+
+function renderNav(){
+  var el = document.getElementById("navin");
+  el.innerHTML = "";
+  SECTIONS.forEach(function(sec){
+    var item = document.createElement("div");
+    item.className = "nitem";
+    var btn = document.createElement("button");
+    btn.className = "nbtn";
+    btn.innerHTML = sec.label.toUpperCase() + ' <span class="caret">\u25BC</span>';
+    var menu = document.createElement("div");
+    menu.className = "nmenu";
+    sec.links.forEach(function(l){
+      var a = document.createElement("a");
+      a.href = l.href; a.textContent = l.name;
+      menu.appendChild(a);
+    });
+    btn.addEventListener("click", function(){
+      var isOpen = menu.classList.contains("show");
+      document.querySelectorAll(".nmenu").forEach(function(m){m.classList.remove("show");});
+      if(!isOpen) menu.classList.add("show");
+    });
+    item.appendChild(btn); item.appendChild(menu);
+    el.appendChild(item);
+  });
+  document.addEventListener("click", function(e){
+    if(!e.target.closest(".nitem")){
+      document.querySelectorAll(".nmenu").forEach(function(m){m.classList.remove("show");});
+    }
+  });
+}
+
+function renderQuick(){
+  var el = document.getElementById("qrow");
+  el.innerHTML = "";
+  MOST_USED.forEach(function(q){
+    var a = document.createElement("a");
+    a.href = q.href;
+    a.className = "qbtn" + (q.primary ? " primary" : "");
+    a.textContent = q.name;
+    el.appendChild(a);
+  });
+}
+
+function buildSearchIndex(){
+  var idx = [];
+  SECTIONS.forEach(function(sec){
+    sec.links.forEach(function(l){ idx.push({name:l.name, href:l.href, group:sec.label}); });
+  });
+  var input = document.getElementById("search");
+  var results = document.getElementById("hresults");
+  input.addEventListener("input", function(){
+    var q = input.value.trim().toLowerCase();
+    if(!q){ results.classList.remove("show"); results.innerHTML=""; return; }
+    var matches = idx.filter(function(i){ return i.name.toLowerCase().indexOf(q) !== -1; });
+    results.innerHTML = "";
+    if(matches.length === 0){
+      results.innerHTML = '<div class="none">No matches</div>';
+    } else {
+      matches.slice(0,8).forEach(function(m){
+        var a = document.createElement("a");
+        a.href = m.href; a.textContent = m.name + " \u2014 " + m.group;
+        results.appendChild(a);
+      });
+    }
+    results.classList.add("show");
+  });
+  document.addEventListener("click", function(e){
+    if(!e.target.closest(".hsearch")) results.classList.remove("show");
+  });
+}
+
+function unlock(){
+  document.getElementById("gate").classList.add("hidden");
+  document.getElementById("app").classList.remove("hidden");
+  renderNav();
+  renderQuick();
+  buildSearchIndex();
+}
+
+function tryPass(pass){
+  var err = document.getElementById("gerr");
+  if(pass === PASSCODE){
+    try{ localStorage.setItem(KEY, "1"); }catch(e){}
+    unlock();
+  } else {
+    err.textContent = "That passcode is not right.";
+  }
+}
+
+document.getElementById("enter").addEventListener("click", function(){
+  tryPass(document.getElementById("pc").value.trim());
+});
+document.getElementById("pc").addEventListener("keydown", function(e){
+  if(e.key === "Enter") tryPass(this.value.trim());
+});
+document.getElementById("signout").addEventListener("click", function(e){
+  e.preventDefault();
+  try{ localStorage.removeItem(KEY); }catch(err){}
+  location.reload();
+});
+
+(function(){
+  var ok = false;
+  try{ ok = localStorage.getItem(KEY) === "1"; }catch(e){}
+  if(ok) unlock();
+})();
+</script>
+</body>
+</html>
