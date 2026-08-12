@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rate Sheet | City Wide of The Triad</title>
+<style>
+:root {
+  --cw-red:#D22730; --cw-red-dark:#A81E26; --cw-black:#2D2A26; --cw-grey:#636466;
+  --cw-white:#FFFFFF; --cw-teal:#0AA6A9; --cw-gold:#E5B423; --cw-light-grey:#F5F5F5;
+  --cw-border:#E5E5E5; --radius:8px; --shadow-sm:0 1px 3px rgba(45,42,38,0.10);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:Verdana,'Liberation Sans','DejaVu Sans',Geneva,Tahoma,sans-serif; background:var(--cw-light-grey); color:var(--cw-black); font-size:13px; line-height:1.5; }
+.logo-bar { background:var(--cw-white); border-bottom:3px solid var(--cw-red); padding:8px 20px; position:relative; }
+.logo-bar img { height:34px; display:block; max-width:80%; object-fit:contain; object-position:left; }
+.back-btn { position:absolute; right:18px; top:50%; transform:translateY(-50%); font-size:12px; font-weight:700; color:#fff; background:var(--cw-red); text-decoration:none; border-radius:16px; padding:7px 15px; box-shadow:0 2px 6px rgba(210,39,48,.3); }
+.hero { position:relative; background:var(--cw-black); color:var(--cw-white); overflow:hidden; }
+.hero::after { content:''; position:absolute; inset:0; background:linear-gradient(100deg, rgba(45,42,38,0.94) 30%, rgba(45,42,38,0.60) 100%); }
+.hero-inner { position:relative; z-index:1; max-width:1240px; margin:0 auto; padding:16px 20px; }
+.hero h1 { font-size:1.15rem; font-weight:700; letter-spacing:0.02em; }
+.hero .tagline { font-size:0.75rem; color:#C9C7C4; margin-top:2px; }
+.wrap { max-width:1240px; margin:22px auto; padding:0 20px 60px; }
+.card { background:var(--cw-white); border:1px solid var(--cw-border); border-radius:var(--radius); box-shadow:var(--shadow-sm); overflow:hidden; }
+.note { font-size:11px; color:var(--cw-grey); margin:0 0 14px; }
+table { width:100%; border-collapse:collapse; }
+thead th { background:var(--cw-red); color:#fff; text-align:left; font-size:12px; letter-spacing:.03em; padding:10px 14px; position:sticky; top:0; }
+tbody th { text-align:left; font-weight:700; background:#EEF1F6; vertical-align:top; padding:10px 14px; width:210px; border-bottom:1px solid var(--cw-border); }
+tbody td { vertical-align:top; padding:10px 14px; border-bottom:1px solid var(--cw-border); }
+tbody tr:nth-child(even) td { background:#FBFBFB; }
+td.rate { background:#FFF9C4 !important; font-weight:700; white-space:nowrap; width:150px; }
+tbody tr:hover th, tbody tr:hover td { background:#FDECEC; }
+tbody tr:hover td.rate { background:#FFF2A8 !important; }
+@media (max-width:640px){ tbody th{width:auto;} .logo-bar img{max-width:55%;} }
+</style>
+</head>
+<body>
+<div class="logo-bar">
+  <a class="back-btn" href="https://djbrowncw.github.io/cw-ops-desk-triad/">&#8592; Back to Ops Hub</a>
+  <img src="https://emailer.emfluence.com/clients/citywide/uploadedfiles/signature_logo.png" alt="City Wide Facility Solutions">
+</div>
+<div class="hero">
+  <div class="hero-inner">
+    <h1>Rate Sheet &mdash; Pricing &amp; Bids</h1>
+    <div class="tagline">Standard service rates for City Wide of The Triad. Rates are starting guidance &mdash; adjust for scope, condition, and site conditions.</div>
+  </div>
+</div>
+<div class="wrap">
+  <p class="note">Rate per SF/HR shown in the highlighted column. Ranges in the description reflect typical market pricing; the highlighted rate is the current default estimate.</p>
+  <div class="card">
+    <table>
+      <thead>
+        <tr><th>OS Service</th><th>Description</th><th>Rate per SF/HR</th></tr>
+      </thead>
+      <tbody>
+      <tr>
+        <th scope="row">Strip &amp; Wax</th>
+        <td>This service removes old wax and polishes the floor with 3-5 coats of wax. It typically costs $0.35 to $2.00 per square foot. Higher rates for corners, edges, baseboards, and old wax buildup. Add $0.15 if the client requires us to move furniture.</td>
+        <td class="rate">$0.85</td>
+      </tr>
+      <tr>
+        <th scope="row">Scrub &amp; Wax</th>
+        <td>This service removes the old wax. You use a black pad on a floor machine to mechanically remove 1-2 surface layers and then reapply top coats. It typically costs $0.15 to $0.45 per square foot.</td>
+        <td class="rate">$0.60</td>
+      </tr>
+      <tr>
+        <th scope="row">Carpet Extraction</th>
+        <td>This service removes dirt, dust, and allergens from carpets by vacuuming them with a powerful machine that injects and extracts cleaning solution. It typically costs $0.25 to $0.50 per square foot.</td>
+        <td class="rate">$0.30</td>
+      </tr>
+      <tr>
+        <th scope="row">Carpet Bonnet Cleaning</th>
+        <td>This service uses a special machine to clean the top layer of carpet fibers. It is less thorough than carpet extraction, but it is also less expensive. It typically costs $0.15 to $0.30 per square foot.</td>
+        <td class="rate">$0.25</td>
+      </tr>
+      <tr>
+        <th scope="row">Inside Windows</th>
+        <td>This service cleans the inside of windows, including the frames and sills.</td>
+        <td class="rate">$50 per hour (3 hour minimum)</td>
+      </tr>
+      <tr>
+        <th scope="row">Outside Windows</th>
+        <td>This service cleans the outside of windows, including the frames and sills.</td>
+        <td class="rate">$50 per hour (3 hour minimum)</td>
+      </tr>
+      <tr>
+        <th scope="row">High Dusting</th>
+        <td>This service dusts high surfaces such as ceiling fans, light fixtures, and blinds. It typically costs $0.30 to $0.40 per square foot.</td>
+        <td class="rate">$0.35</td>
+      </tr>
+      <tr>
+        <th scope="row">Tile &amp; Grout Steam Cleaning</th>
+        <td>This service cleans tile and grout by steaming them with hot water and detergent. It typically costs $0.35 to $0.50 per square foot.</td>
+        <td class="rate">$0.40</td>
+      </tr>
+      <tr>
+        <th scope="row">Upholstery Cleaning</th>
+        <td>This service steam cleans upholstery such as chairs, couches, and mattresses. It typically costs $0.25 to $0.50 per square foot.</td>
+        <td class="rate">$0.35</td>
+      </tr>
+      <tr>
+        <th scope="row">Cubicle Steam Cleaning</th>
+        <td>This service steam cleans cubicles. Cost is $10-$20 per cubicle.</td>
+        <td class="rate">$20.00</td>
+      </tr>
+      <tr>
+        <th scope="row">Deep Cleaning</th>
+        <td>This service is a thorough cleaning that includes all of the above services, plus additional tasks such as polishing furniture, cleaning appliances, and disinfecting surfaces. It typically costs $0.50 to $1.00 per square foot. Must get scope of work from the client first.</td>
+        <td class="rate">$1.00</td>
+      </tr>
+      <tr>
+        <th scope="row">Rough Clean (Construction)</th>
+        <td>This is a preliminary cleaning that removes large debris and dirt from a construction site. It typically includes sweeping, vacuuming, and mopping. It typically costs $0.20 to $0.30 per square foot.</td>
+        <td class="rate">$0.30</td>
+      </tr>
+      <tr>
+        <th scope="row">General Clean (Construction)</th>
+        <td>This is a more thorough cleaning that removes dust, fingerprints, and other minor debris from a construction site. It typically includes cleaning all surfaces, including floors, walls, ceilings, windows, and appliances. It typically costs $0.35 to $0.50 per square foot.</td>
+        <td class="rate">$0.50</td>
+      </tr>
+      <tr>
+        <th scope="row">Final Clean (Construction)</th>
+        <td>This is the most thorough cleaning and typically includes everything that is done in the general clean, as well as additional tasks such as polishing furniture, cleaning carpets, and disinfecting surfaces. It typically costs $0.30 to $0.50 per square foot.</td>
+        <td class="rate">$0.30</td>
+      </tr>
+      <tr>
+        <th scope="row">Surfacing Washing (pressure)</th>
+        <td>This service uses a high-pressure water jet to clean surfaces such as concrete, brick, and stucco. It typically costs $0.15 to $0.50 per square foot.</td>
+        <td class="rate">$0.35</td>
+      </tr>
+      <tr>
+        <th scope="row">Buffing Terrazo</th>
+        <td>This service uses a special machine to buff terrazzo floors to a high shine. It typically costs $0.50 to $1.00 per square foot.</td>
+        <td class="rate">$0.75</td>
+      </tr>
+      <tr>
+        <th scope="row">Graffiti removal</th>
+        <td>This service involves removing graffiti from walls, floors, and other surfaces.</td>
+        <td class="rate">$50 per hour (3 hour minimum)</td>
+      </tr>
+      <tr>
+        <th scope="row">Epoxy coating</th>
+        <td>This service involves applying a layer of epoxy resin to a floor or other surface. $2.00 to $3.00</td>
+        <td class="rate">$3.00</td>
+      </tr>
+      <tr>
+        <th scope="row">Concrete polishing</th>
+        <td>This service involves polishing a concrete floor to a high shine. $2.00</td>
+        <td class="rate">$2.00</td>
+      </tr>
+      <tr>
+        <th scope="row">Walk-behind floor machine autos</th>
+        <td>This service uses a walk-behind floor machine to clean and polish floors. $0.25-$1</td>
+        <td class="rate">$0.50</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</body>
+</html>
