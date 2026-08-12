@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Margin Calculator | City Wide Facility Solutions</title>
+<style>
+:root {
+    --cw-red: #D22730;
+    --cw-red-dark: #A81E26;
+    --cw-black: #2D2A26;
+    --cw-grey: #636466;
+    --cw-white: #FFFFFF;
+    --cw-teal: #0AA6A9;
+    --cw-gold: #E5B423;
+    --cw-light-grey: #F5F5F5;
+    --cw-border: #E5E5E5;
+    --radius: 8px;
+    --shadow-sm: 0 1px 3px rgba(45,42,38,0.10);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+    font-family: Verdana, 'Liberation Sans', 'DejaVu Sans', Geneva, Tahoma, sans-serif;
+    background: var(--cw-light-grey);
+    color: var(--cw-black);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+/* ===== Header ===== */
+.logo-bar {
+    background: var(--cw-white);
+    border-bottom: 3px solid var(--cw-red);
+    padding: 8px 20px;
+}
+.logo-bar img { height: 34px; display:block; max-width:80%; object-fit:contain; object-position:left; }
+
+.hero {
+    position: relative;
+    background: var(--cw-black);
+    color: var(--cw-white);
+    overflow: hidden;
+}
+.hero::before {
+    content:'';
+    position:absolute; inset:0;
+    background: url('https://citywidelv.github.io/margincalculator/cw-hero.jpg') center 35% / cover no-repeat;
+    opacity: 0.25;
+    filter: grayscale(100%);
+}
+.hero::after {
+    content:'';
+    position:absolute; inset:0;
+    background: linear-gradient(100deg, rgba(45,42,38,0.94) 30%, rgba(45,42,38,0.60) 100%);
+}
+.hero-inner {
+    position: relative; z-index: 1;
+    max-width: 1240px; margin: 0 auto;
+    padding: 16px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 12px;
+}
+.hero h1 { font-size: 1.15rem; font-weight: 700; letter-spacing: 0.02em; }
+.hero .tagline { font-size: 0.75rem; color: #C9C7C4; margin-top: 2px; }
+
+.region-toggle {
+    display:inline-flex;
+    border: 2px solid var(--cw-white);
+    border-radius: 999px;
+    overflow: hidden;
+    background: transparent;
+}
+.region-toggle button {
+    appearance:none; border:none; background:transparent;
+    font-family: inherit;
+    font-size: 0.78rem; font-weight: 700;
+    padding: 7px 16px;
+    cursor: pointer;
+    color: var(--cw-white);
+    transition: background 0.15s ease, color 0.15s ease;
+}
+.region-toggle button.active { background: var(--cw-white); color: var(--cw-black); }
+.region-toggle button:focus-visible { outline: 3px solid var(--cw-red); outline-offset: -3px; }
+
+/* ===== Layout ===== */
+.wrap {
+    max-width: 1240px; margin: 0 auto;
+    padding: 16px 20px 30px;
+    display: grid;
+    grid-template-columns: minmax(300px, 5fr) 7fr;
+    gap: 16px;
+    align-items: start;
+}
+.card {
+    background: var(--cw-white);
+    border: 1px solid var(--cw-border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    padding: 16px 18px;
+}
+.card h2 {
+    font-size: 0.92rem; font-weight: 700;
+    padding-bottom: 8px; margin-bottom: 12px;
+    border-bottom: 2px solid var(--cw-red);
+    display:flex; justify-content: space-between; align-items:baseline;
+}
+.card h2 .h2-note { font-weight:400; font-size:0.7rem; color: var(--cw-grey); }
+
+/* ===== Inputs card ===== */
+label.field-label { display:block; font-weight: 700; font-size: 0.75rem; margin-bottom: 4px; }
+.sel-row { display:grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 14px; }
+select {
+    width: 100%;
+    padding: 8px 10px;
+    font-family: inherit; font-size: 0.82rem;
+    color: var(--cw-black);
+    border: 1.5px solid var(--cw-border);
+    border-radius: 6px;
+    background: var(--cw-white);
+    cursor: pointer;
+}
+select:focus { outline:none; border-color: var(--cw-red); box-shadow: 0 0 0 3px rgba(210,39,48,0.10); }
+
+.num-row { display:flex; align-items:center; gap:10px; margin-bottom: 10px; }
+.num-label { flex: 1 1 46%; }
+.num-label .nl-title { font-weight:700; font-size: 0.78rem; display:flex; align-items:center; gap:6px; }
+.num-label .nl-hint { font-size: 0.68rem; color: var(--cw-grey); }
+.solved-chip {
+    font-size: 0.58rem; font-weight: 700; letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--cw-teal);
+    border: 1px solid var(--cw-teal);
+    border-radius: 999px;
+    padding: 0px 6px;
+    visibility: hidden;
+}
+.num-row.is-solved .solved-chip { visibility: visible; }
+.num-row.is-solved input { background: var(--cw-light-grey); border-style: dashed; }
+.input-wrap { position: relative; flex: 1 1 54%; }
+.input-wrap .sym {
+    position:absolute; top:50%; transform:translateY(-50%);
+    color: var(--cw-grey); font-weight: 700; font-size: 0.85rem;
+}
+.input-wrap .sym.pre { left: 10px; }
+.input-wrap .sym.post { right: 10px; }
+input[type="number"] {
+    width: 100%;
+    font-family: inherit;
+    font-size: 1rem; font-weight: 700;
+    color: var(--cw-black);
+    padding: 8px 10px;
+    border: 1.5px solid var(--cw-border);
+    border-radius: 6px;
+    background: var(--cw-white);
+    text-align: right;
+}
+input.has-pre { padding-left: 24px; }
+input.has-post { padding-right: 26px; }
+input[type="number"]:focus { outline:none; border-color: var(--cw-red); box-shadow: 0 0 0 3px rgba(210,39,48,0.10); }
+input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
+input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
+
+.smart-tip {
+    background: var(--cw-light-grey);
+    border-left: 3px solid var(--cw-red);
+    border-radius: 4px;
+    padding: 8px 10px;
+    font-size: 0.7rem;
+    color: var(--cw-grey);
+    margin-top: 4px;
+}
+.region-note { font-size: 0.7rem; color: var(--cw-grey); margin-top: 10px; display:flex; gap:6px; }
+.region-note .dot { width:6px; height:6px; border-radius:50%; background: var(--cw-red); flex:none; margin-top:5px; }
+
+.actions { display:flex; gap: 10px; margin-top: 14px; }
+button.btn {
+    font-family: inherit;
+    font-size: 0.78rem; font-weight: 700;
+    padding: 9px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 1.5px solid transparent;
+    flex: 1;
+}
+.btn-primary { background: var(--cw-red); color:#fff; }
+.btn-primary:hover { background: var(--cw-red-dark); }
+.btn-secondary { background: #fff; color: var(--cw-black); border-color: var(--cw-black); }
+.btn-secondary:hover { background: var(--cw-black); color: #fff; }
+
+/* ===== Barometer card ===== */
+.baro-head { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:8px; }
+.status-pill {
+    font-weight: 700; font-size: 0.82rem;
+    border-radius: 999px;
+    padding: 6px 14px;
+    border: 1.5px solid var(--cw-border);
+    color: var(--cw-grey);
+    background: var(--cw-white);
+}
+.status-pill.ok    { background: #E7F6F6; color: #067d80; border-color: var(--cw-teal); }
+.status-pill.high  { background: #FBF2D3; color: #7A6013; border-color: var(--cw-gold); }
+.status-pill.low   { background: #FAE4E5; color: var(--cw-red-dark); border-color: var(--cw-red); }
+.fair-line { font-size: 0.75rem; color: var(--cw-grey); }
+.fair-line strong { color: var(--cw-black); }
+
+.gauge { margin: 22px 0 2px; }
+.gauge-track {
+    position: relative;
+    height: 14px;
+    border-radius: 999px;
+    background: #EDEDED;
+}
+.gauge-zone { position:absolute; top:0; bottom:0; }
+.gauge-zone.low  { left:0; background:#F3D4D6; border-radius: 999px 0 0 999px; }
+.gauge-zone.fair { background: var(--cw-teal); opacity: 0.85; }
+.gauge-zone.high { right:0; background:#F3E7C2; border-radius: 0 999px 999px 0; }
+.gauge-target { position:absolute; top:-5px; bottom:-5px; width: 2.5px; background: var(--cw-black); }
+.gauge-needle {
+    position:absolute; top:-9px;
+    width: 0; height: 0;
+    transform: translateX(-7px);
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-top: 10px solid var(--cw-red);
+    transition: left 0.25s ease;
+}
+.gauge-needle::after {
+    content:''; position:absolute; left:-1px; top:-10px;
+    width:2.5px; height: 32px; background: var(--cw-red);
+    opacity: 0.55;
+}
+.gauge-labels { position: relative; height: 28px; margin-top: 8px; font-size: 0.65rem; color: var(--cw-grey); }
+.gauge-labels span { position:absolute; transform: translateX(-50%); white-space: nowrap; }
+.gauge-labels span.drop { top: 13px; }
+.gauge-scale { display:flex; justify-content:space-between; font-size: 0.6rem; color:#A9A9AB; margin-top: 2px; }
+
+.baro-meta {
+    display:grid; grid-template-columns: repeat(4, 1fr);
+    gap: 10px; margin-top: 16px;
+}
+.meta-item .m-label { font-size: 0.62rem; color: var(--cw-grey); text-transform: uppercase; letter-spacing: 0.05em; }
+.meta-item .m-value { font-size: 0.92rem; font-weight: 700; }
+.baro-text {
+    margin-top: 12px; font-size: 0.78rem;
+    background: var(--cw-light-grey);
+    border-radius: 6px; padding: 10px 12px;
+}
+
+.results-grid { display:grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 14px; }
+.result-card {
+    background: var(--cw-light-grey);
+    border-radius: 6px;
+    padding: 10px 8px;
+    text-align: center;
+}
+.result-label { font-size: 0.62rem; color: var(--cw-grey); }
+.result-value { font-size: 1rem; font-weight: 700; color: var(--cw-black); }
+
+details.formulas { margin-top: 12px; }
+details.formulas summary {
+    cursor: pointer; font-weight: 700; font-size: 0.72rem;
+    color: var(--cw-grey);
+    list-style: none;
+    display:flex; align-items:center; gap:6px;
+}
+details.formulas summary::before { content:'+'; color: var(--cw-red); font-weight: 700; }
+details[open].formulas summary::before { content:'\2212'; }
+.formula-box {
+    margin-top: 8px;
+    background: var(--cw-light-grey);
+    border-left: 3px solid var(--cw-grey);
+    border-radius: 4px;
+    padding: 10px 12px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.7rem;
+    line-height: 1.8;
+}
+
+footer {
+    text-align:center;
+    padding: 10px 12px 60px;
+    font-size: 10px;
+    color: var(--cw-grey);
+}
+footer a { color: var(--cw-red); font-weight: 700; text-decoration: none; }
+
+@media (max-width: 940px) {
+    .wrap { grid-template-columns: 1fr; }
+    .results-grid, .baro-meta { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="logo-bar" style="position:relative">
+    <a href="https://djbrowncw.github.io/cw-ops-desk-triad/" style="position:absolute;right:18px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:700;color:#fff;background:var(--cw-red);text-decoration:none;border-radius:16px;padding:7px 15px;box-shadow:0 2px 6px rgba(210,39,48,.3)">&#8592; Back to Ops Hub</a>
+    <img src="https://emailer.emfluence.com/clients/citywide/uploadedfiles/signature_logo.png" alt="City Wide Facility Solutions">
+</div>
+
+<div class="hero">
+    <div class="hero-inner">
+        <div>
+            <h1>Margin Calculator &amp; Fair Price Barometer</h1>
+            <div class="tagline">Enter any two numbers, the third solves itself. The barometer shows if the price is fair for your market.</div>
+        </div>
+        <div class="region-toggle" role="group" aria-label="Region">
+            <button type="button" id="region-lv" class="active" onclick="setRegion('lv')">The Triad</button>
+        </div>
+    </div>
+</div>
+
+<div class="wrap">
+
+    <!-- LEFT: inputs -->
+    <div class="card">
+        <h2>Deal Inputs <span class="h2-note">fill any two number fields</span></h2>
+
+        <div class="sel-row">
+            <div>
+                <label class="field-label" for="service-type">Service Category</label>
+                <select id="service-type" onchange="recalc()">
+                    <option value="">General guidance (no service selected)</option>
+                    <optgroup label="Cleaning Services">
+                        <option value="floor-care">Floor Care (Strip &amp; Wax, Buffing)</option>
+                        <option value="carpet-cleaning">Carpet Cleaning</option>
+                        <option value="window-cleaning">Window Cleaning</option>
+                        <option value="pressure-washing">Pressure Washing</option>
+                        <option value="post-construction">Post-Construction Cleanup</option>
+                        <option value="deep-cleaning">Deep Cleaning Services</option>
+                    </optgroup>
+                    <optgroup label="Temporary Labor">
+                        <option value="temp-labor">General Temporary Labor</option>
+                        <option value="temp-security">Temporary Security Labor</option>
+                        <option value="event-staff">Event Staffing</option>
+                        <option value="emergency-labor">Emergency Response Labor</option>
+                    </optgroup>
+                    <optgroup label="Maintenance Services">
+                        <option value="hvac">HVAC Services</option>
+                        <option value="plumbing">Plumbing</option>
+                        <option value="electrical">Electrical</option>
+                        <option value="painting">Painting &amp; Drywall</option>
+                        <option value="roofing">Roofing Repairs</option>
+                        <option value="general-maintenance">General Maintenance</option>
+                    </optgroup>
+                    <optgroup label="Specialty Services">
+                        <option value="pest-control">Pest Control</option>
+                        <option value="landscaping">Landscaping &amp; Grounds</option>
+                        <option value="snow-removal">Snow Removal</option>
+                        <option value="parking-lot">Parking Lot Maintenance</option>
+                        <option value="waste-management">Waste Management</option>
+                    </optgroup>
+                    <optgroup label="Technical Services">
+                        <option value="fire-safety">Fire Safety Systems</option>
+                        <option value="security-systems">Security Systems</option>
+                        <option value="elevator">Elevator Maintenance</option>
+                        <option value="generator">Generator Services</option>
+                        <option value="building-automation">Building Automation</option>
+                    </optgroup>
+                    <optgroup label="Other Services">
+                        <option value="other-project">Other Service Project</option>
+                        <option value="custom">Custom Service</option>
+                    </optgroup>
+                </select>
+            </div>
+            <div>
+                <label class="field-label" for="project-size">Project Size</label>
+                <select id="project-size" onchange="recalc()">
+                    <option value="small">Small (Under $1,000)</option>
+                    <option value="medium">Medium ($1,000 - $5,000)</option>
+                    <option value="large">Large ($5,000 - $10,000)</option>
+                    <option value="enterprise">Enterprise ($10,000+)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="num-row" id="cell-vendor">
+            <div class="num-label">
+                <div class="nl-title"><label for="vendor-cost">City Wide Cost to Vendor</label> <span class="solved-chip">Solved</span></div>
+                <div class="nl-hint">What we pay the vendor</div>
+            </div>
+            <div class="input-wrap">
+                <span class="sym pre">$</span>
+                <input type="number" id="vendor-cost" class="has-pre" placeholder="0.00" step="0.01" min="0" inputmode="decimal" oninput="onUserInput('vendor')">
+            </div>
+        </div>
+
+        <div class="num-row" id="cell-margin">
+            <div class="num-label">
+                <div class="nl-title"><label for="margin-rate">Margin Rate</label> <span class="solved-chip">Solved</span></div>
+                <div class="nl-hint">On price, not markup on cost</div>
+            </div>
+            <div class="input-wrap">
+                <input type="number" id="margin-rate" class="has-post" placeholder="40" step="0.5" min="0" max="99" inputmode="decimal" oninput="onUserInput('margin')">
+                <span class="sym post">%</span>
+            </div>
+        </div>
+
+        <div class="num-row" id="cell-customer">
+            <div class="num-label">
+                <div class="nl-title"><label for="customer-price">City Wide Price to Customer</label> <span class="solved-chip">Solved</span></div>
+                <div class="nl-hint">What the customer is quoted</div>
+            </div>
+            <div class="input-wrap">
+                <span class="sym pre">$</span>
+                <input type="number" id="customer-price" class="has-pre" placeholder="0.00" step="0.01" min="0" inputmode="decimal" oninput="onUserInput('customer')">
+            </div>
+        </div>
+
+        <div class="smart-tip">Margin starts at 40%, the City Wide target for Other Service Projects. Type a vendor cost to see the customer price, or type the customer's budget to work backward.</div>
+
+        <div class="region-note" id="region-note">
+            <span class="dot"></span>
+            <span>The Triad is our core market. Deep vendor supply keeps pricing sharp.</span>
+        </div>
+
+        <div class="actions">
+            <button class="btn btn-primary" type="button" onclick="exportToCSV()">Export CSV</button>
+            <button class="btn btn-secondary" type="button" onclick="resetCalculator()">Reset</button>
+        </div>
+    </div>
+
+    <!-- RIGHT: barometer + metrics -->
+    <div class="card">
+        <h2>Fair Price Barometer <span class="h2-note" id="baro-sub">fair range for this work in The Triad</span></h2>
+
+        <div class="baro-head">
+            <div class="status-pill" id="status-pill">Enter numbers to check your position</div>
+            <div class="fair-line" id="fair-price-line"></div>
+        </div>
+
+        <div class="gauge">
+            <div class="gauge-track" id="gauge-track">
+                <div class="gauge-zone low" id="zone-low"></div>
+                <div class="gauge-zone fair" id="zone-fair"></div>
+                <div class="gauge-zone high" id="zone-high"></div>
+                <div class="gauge-target" id="gauge-target"></div>
+                <div class="gauge-needle" id="gauge-needle" style="display:none;"></div>
+            </div>
+            <div class="gauge-labels" id="gauge-labels"></div>
+            <div class="gauge-scale"><span>0%</span><span>10%</span><span>20%</span><span>30%</span><span>40%</span><span>50%</span><span>60%</span></div>
+        </div>
+
+        <div class="baro-meta">
+            <div class="meta-item"><div class="m-label">Fair Margin Range</div><div class="m-value" id="target-range">32-45%</div></div>
+            <div class="meta-item"><div class="m-label">Company Target</div><div class="m-value" id="target-pt">40%</div></div>
+            <div class="meta-item"><div class="m-label">Market Position</div><div class="m-value" id="market-position">--</div></div>
+            <div class="meta-item"><div class="m-label">Recommended Action</div><div class="m-value" id="recommended-action">--</div></div>
+        </div>
+
+        <div class="baro-text" id="recommendation-text">
+            City Wide targets 32-40% margins on most work, with 40% the standard for Other Service Projects. Large projects over $10,000 can slide to 20-30% to stay competitive. 20% is the floor anywhere, in any market.
+        </div>
+
+        <div class="results-grid">
+            <div class="result-card"><div class="result-label">Gross Profit</div><div class="result-value" id="gross-profit">$0.00</div></div>
+            <div class="result-card"><div class="result-label">Markup on Cost</div><div class="result-value" id="markup-percent">0%</div></div>
+            <div class="result-card"><div class="result-label">Profit per $100</div><div class="result-value" id="profit-per-hundred">$0.00</div></div>
+            <div class="result-card"><div class="result-label">Price Multiplier</div><div class="result-value" id="multiplier">1.00x</div></div>
+        </div>
+
+        <details class="formulas">
+            <summary>How the math works</summary>
+            <div class="formula-box">
+                Customer Price = Vendor Cost &divide; (1 - Margin)&nbsp;&nbsp;&nbsp;$1,000 &divide; 0.60 = $1,666.67 at 40%<br>
+                Vendor Cost = Customer Price &times; (1 - Margin)&nbsp;&nbsp;&nbsp;$1,666.67 &times; 0.60 = $1,000.00<br>
+                Margin = (Price - Cost) &divide; Price&nbsp;&nbsp;&nbsp;($1,666.67 - $1,000) &divide; $1,666.67 = 40%<br>
+                Margin is figured on the customer price, not on cost. A 40% margin is a 66.7% markup.
+            </div>
+        </details>
+    </div>
+
+</div>
+
+<footer>City Wide Facility Solutions | <a href="https://www.gocitywide.com">GoCityWide.com</a></footer>
+
+<script>
+// ================= CONFIG =================
+// Per-service fair margin bands (percent margin on customer price), The Triad baseline.
+var serviceMargins = {
+    'floor-care':          { min: 35, target: 40, max: 45 },
+    'carpet-cleaning':     { min: 35, target: 40, max: 45 },
+    'window-cleaning':     { min: 32, target: 38, max: 42 },
+    'pressure-washing':    { min: 35, target: 40, max: 45 },
+    'post-construction':   { min: 30, target: 35, max: 40 },
+    'deep-cleaning':       { min: 35, target: 40, max: 45 },
+    'temp-labor':          { min: 20, target: 25, max: 30 },
+    'temp-security':       { min: 18, target: 22, max: 28 },
+    'event-staff':         { min: 25, target: 30, max: 35 },
+    'emergency-labor':     { min: 30, target: 35, max: 45 },
+    'hvac':                { min: 25, target: 32, max: 38 },
+    'plumbing':            { min: 25, target: 32, max: 38 },
+    'electrical':          { min: 25, target: 32, max: 38 },
+    'painting':            { min: 35, target: 40, max: 45 },
+    'roofing':             { min: 25, target: 30, max: 35 },
+    'general-maintenance': { min: 32, target: 38, max: 42 },
+    'pest-control':        { min: 35, target: 40, max: 45 },
+    'landscaping':         { min: 32, target: 38, max: 42 },
+    'snow-removal':        { min: 35, target: 40, max: 50 },
+    'parking-lot':         { min: 30, target: 35, max: 40 },
+    'waste-management':    { min: 28, target: 35, max: 40 },
+    'fire-safety':         { min: 25, target: 30, max: 35 },
+    'security-systems':    { min: 28, target: 35, max: 40 },
+    'elevator':            { min: 20, target: 25, max: 30 },
+    'generator':           { min: 25, target: 30, max: 35 },
+    'building-automation': { min: 30, target: 35, max: 40 },
+    'other-project':       { min: 35, target: 40, max: 45 },
+    'custom':              { min: 32, target: 38, max: 42 }
+};
+var GENERIC_BAND = { min: 32, target: 40, max: 45 };  // when no service selected
+var FLOOR = 20;            // absolute company minimum margin, any market
+var GAUGE_MAX = 60;        // gauge runs 0-60% margin
+var region = 'lv';
+
+var REGION_NOTES = {
+    lv:  'The Triad is our core market. Deep vendor supply keeps pricing sharp.'
+};
+
+// ================= SMART SOLVE =================
+// The two most recently user-edited fields drive the third.
+var editOrder = ['margin'];   // default 40% margin counts as an initial user choice
+
+function onUserInput(field) {
+    editOrder = editOrder.filter(function(f){ return f !== field; });
+    editOrder.push(field);
+    if (editOrder.length > 2) editOrder = editOrder.slice(-2);
+    recalc();
+}
+
+function val(id) { var v = parseFloat(document.getElementById(id).value); return isNaN(v) ? null : v; }
+function setVal(id, v, dec) { document.getElementById(id).value = v.toFixed(dec); }
+
+function solve() {
+    var cost = val('vendor-cost'), m = val('margin-rate'), price = val('customer-price');
+    var known = editOrder.slice();
+    var solved = null;
+
+    if (known.indexOf('vendor') >= 0 && known.indexOf('margin') >= 0 && cost !== null && m !== null && m < 100) {
+        setVal('customer-price', cost / (1 - m/100), 2); solved = 'customer';
+    } else if (known.indexOf('customer') >= 0 && known.indexOf('margin') >= 0 && price !== null && m !== null) {
+        setVal('vendor-cost', price * (1 - m/100), 2); solved = 'vendor';
+    } else if (known.indexOf('vendor') >= 0 && known.indexOf('customer') >= 0 && cost !== null && price !== null && price > 0) {
+        setVal('margin-rate', ((price - cost) / price) * 100, 1); solved = 'margin';
+    }
+
+    ['vendor','margin','customer'].forEach(function(f){
+        var cell = document.getElementById('cell-' + f);
+        if (f === solved) cell.classList.add('is-solved'); else cell.classList.remove('is-solved');
+    });
+}
+
+// ================= BAND LOGIC =================
+function currentBand() {
+    var svc = document.getElementById('service-type').value;
+    var size = document.getElementById('project-size').value;
+    var price = val('customer-price') || 0;
+    var base = svc ? serviceMargins[svc] : GENERIC_BAND;
+    var b = { min: base.min, target: base.target, max: base.max, sizeNote: '' };
+
+    // Size adjustments (original City Wide rules preserved)
+    if (size === 'enterprise' && price > 10000) {
+        b.min = Math.max(20, base.min - 10);
+        b.target = Math.max(25, base.target - 10);
+        b.max = Math.max(30, base.max - 10);
+        b.sizeNote = 'large-project sliding scale applied';
+    } else if (size === 'large') {
+        b.min = base.min - 3; b.target = base.target - 3; b.max = base.max - 3;
+        b.sizeNote = 'large project adjustment (-3 pts)';
+    }
+
+    return b;
+}
+
+function serviceLabel() {
+    var sel = document.getElementById('service-type');
+    return sel.value ? sel.options[sel.selectedIndex].text.replace(/\s+/g,' ').trim() : 'this work';
+}
+function regionLabel() { return 'The Triad'; }
+function fmt$(n) { return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+
+// ================= RENDER =================
+function renderGauge(b, m) {
+    var pct = function(x){ return Math.max(0, Math.min(100, x / GAUGE_MAX * 100)); };
+    document.getElementById('zone-low').style.width = pct(b.min) + '%';
+    var fair = document.getElementById('zone-fair');
+    fair.style.left = pct(b.min) + '%';
+    fair.style.width = (pct(b.max) - pct(b.min)) + '%';
+    var high = document.getElementById('zone-high');
+    high.style.left = pct(b.max) + '%';
+    high.style.width = (100 - pct(b.max)) + '%';
+    document.getElementById('gauge-target').style.left = pct(b.target) + '%';
+
+    var labels = document.getElementById('gauge-labels');
+    var minDrop = (b.target - b.min) <= 6 ? ' class="drop"' : '';
+    var maxDrop = (b.max - b.target) <= 6 ? ' class="drop"' : '';
+    labels.innerHTML =
+        '<span' + minDrop + ' style="left:' + pct(b.min) + '%">min ' + b.min + '%</span>' +
+        '<span style="left:' + pct(b.target) + '%;font-weight:700;color:var(--cw-black);">target ' + b.target + '%</span>' +
+        '<span' + maxDrop + ' style="left:' + pct(b.max) + '%">max ' + b.max + '%</span>';
+
+    var needle = document.getElementById('gauge-needle');
+    if (m !== null && m > 0) {
+        needle.style.display = 'block';
+        needle.style.left = pct(m) + '%';
+    } else {
+        needle.style.display = 'none';
+    }
+}
+
+function renderStatus(b, m, cost) {
+    var pill = document.getElementById('status-pill');
+    var pos = document.getElementById('market-position');
+    var act = document.getElementById('recommended-action');
+    var txt = document.getElementById('recommendation-text');
+    var svc = serviceLabel();
+    var reg = regionLabel();
+
+    document.getElementById('target-range').textContent = b.min + '-' + b.max + '%';
+    document.getElementById('target-pt').textContent = b.target + '%';
+    document.getElementById('baro-sub').textContent = 'fair range for ' + svc.toLowerCase() + ' in ' + reg + (b.sizeNote ? ' (' + b.sizeNote + ')' : '');
+
+    // Fair customer price range in dollars, when we know vendor cost
+    var priceLine = document.getElementById('fair-price-line');
+    if (cost !== null && cost > 0) {
+        var lo = cost / (1 - b.min/100), tp = cost / (1 - b.target/100), hi = cost / (1 - b.max/100);
+        priceLine.innerHTML = 'Fair customer price on this cost: <strong>' + fmt$(lo) + ' to ' + fmt$(hi) + '</strong> (target ' + fmt$(tp) + ')';
+    } else {
+        priceLine.textContent = '';
+    }
+
+    if (m === null || m <= 0) {
+        pill.className = 'status-pill';
+        pill.textContent = 'Enter numbers to check your position';
+        pos.textContent = '--'; act.textContent = '--';
+        txt.textContent = 'City Wide targets 32-40% margins on most work, with 40% the standard for Other Service Projects. Large projects over $10,000 can slide to 20-30% to stay competitive. ' + FLOOR + '% is the floor anywhere, in any market.';
+        return;
+    }
+
+    var status, cls, position, action, message;
+    if (m >= b.max) {
+        cls = 'high'; status = 'Above Fair Range';
+        position = 'Premium'; action = 'Consider Reducing';
+        message = 'A ' + m.toFixed(1) + '% margin prices this above the fair range for ' + svc.toLowerCase() + ' in ' + reg + '. You are exposed if the customer shops the work. Consider landing between ' + b.target + '% and ' + b.max + '%.';
+    } else if (m >= b.target) {
+        cls = 'ok'; status = 'Inside Fair Range';
+        position = 'Competitive'; action = 'Maintain';
+        message = 'A ' + m.toFixed(1) + '% margin sits in the sweet spot for ' + svc.toLowerCase() + ' in ' + reg + ': fair to the customer and strong for the branch. Hold here.';
+    } else if (m >= b.min) {
+        cls = 'ok'; status = 'Inside Fair Range (Low Side)';
+        position = 'Competitive'; action = 'Consider Increase';
+        message = 'A ' + m.toFixed(1) + '% margin is fair but below the ' + b.target + '% target for ' + svc.toLowerCase() + ' in ' + reg + '. If the relationship and scope allow, move toward target. You are leaving money on the table.';
+    } else if (m >= FLOOR) {
+        cls = 'low'; status = 'Below Fair Range';
+        position = 'Aggressive'; action = 'Increase Recommended';
+        message = 'A ' + m.toFixed(1) + '% margin is under the ' + b.min + '% fair-range floor for ' + svc.toLowerCase() + ' in ' + reg + '. Low margins should be a strategic choice on big work, not a habit. Get above ' + b.min + '% or get a reason in writing.';
+    } else {
+        cls = 'low'; status = 'Below Company Minimum';
+        position = 'Unsustainable'; action = 'Urgent Review';
+        message = 'A ' + m.toFixed(1) + '% margin is below the City Wide floor of ' + FLOOR + '%. This job loses money once management time and risk are priced in. Rework the vendor cost or the customer price before quoting.';
+    }
+
+    pill.className = 'status-pill ' + cls;
+    pill.textContent = status;
+    pos.textContent = position;
+    act.textContent = action;
+    txt.textContent = message;
+}
+
+function renderMetrics() {
+    var cost = val('vendor-cost') || 0, price = val('customer-price') || 0, m = val('margin-rate') || 0;
+    var gross = price - cost;
+    document.getElementById('gross-profit').textContent = fmt$(gross);
+    document.getElementById('markup-percent').textContent = (cost > 0 ? ((price - cost) / cost) * 100 : 0).toFixed(1) + '%';
+    document.getElementById('profit-per-hundred').textContent = '$' + m.toFixed(2);
+    document.getElementById('multiplier').textContent = (cost > 0 ? price / cost : 1).toFixed(2) + 'x';
+}
+
+function recalc() {
+    solve();
+    var b = currentBand();
+    var m = val('margin-rate');
+    renderGauge(b, m);
+    renderStatus(b, m, val('vendor-cost'));
+    renderMetrics();
+}
+
+function setRegion(r) {
+    region = r;
+    document.getElementById('region-lv').classList.toggle('active', r === 'lv');
+    document.querySelector('#region-note span:last-child').textContent = REGION_NOTES[r];
+    recalc();
+}
+
+// ================= EXPORT / RESET =================
+function exportToCSV() {
+    var b = currentBand();
+    var svcSel = document.getElementById('service-type');
+    var svc = svcSel.value ? svcSel.options[svcSel.selectedIndex].text : 'Not specified';
+    var size = document.getElementById('project-size').value;
+    var cost = document.getElementById('vendor-cost').value || '0';
+    var m = document.getElementById('margin-rate').value || '0';
+    var price = document.getElementById('customer-price').value || '0';
+
+    var csv = 'City Wide Margin Calculator Export\n';
+    csv += 'Generated on,' + new Date().toLocaleString() + '\n\n';
+    csv += 'MARKET\n';
+    csv += 'Region,' + regionLabel() + '\n';
+    csv += 'Service Type,' + svc.replace(/,/g, ' ') + '\n';
+    csv += 'Project Size,' + size + '\n\n';
+    csv += 'PRIMARY VALUES\n';
+    csv += 'City Wide Cost to Vendor,$' + cost + '\n';
+    csv += 'Margin Rate,' + m + '%\n';
+    csv += 'City Wide Price to Customer,$' + price + '\n\n';
+    csv += 'CALCULATED METRICS\n';
+    csv += 'Gross Profit,' + document.getElementById('gross-profit').textContent + '\n';
+    csv += 'Markup on Cost,' + document.getElementById('markup-percent').textContent + '\n\n';
+    csv += 'BAROMETER\n';
+    csv += 'Fair Margin Range,' + b.min + '-' + b.max + '%\n';
+    csv += 'Company Target,' + b.target + '%\n';
+    csv += 'Status,' + document.getElementById('status-pill').textContent + '\n';
+    csv += 'Market Position,' + document.getElementById('market-position').textContent + '\n';
+    csv += 'Recommended Action,' + document.getElementById('recommended-action').textContent + '\n\n';
+    csv += 'CITY WIDE GUIDELINES\n';
+    csv += 'Standard Target Range,32-40%\n';
+    csv += 'Other Service Projects Target,40%\n';
+    csv += 'Large Project Range (over $10k),20-30%\n';
+    csv += 'Minimum Acceptable Margin,' + FLOOR + '%\n';
+
+    var blob = new Blob([csv], { type: 'text/csv' });
+    var url = window.URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'citywide_margin_' + new Date().toISOString().split('T')[0] + '.csv';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+}
+
+function resetCalculator() {
+    document.getElementById('service-type').value = '';
+    document.getElementById('project-size').value = 'small';
+    document.getElementById('vendor-cost').value = '';
+    document.getElementById('customer-price').value = '';
+    document.getElementById('margin-rate').value = '40';
+    editOrder = ['margin'];
+    setRegion('lv');
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('margin-rate').value = '40';
+    recalc();
+});
+</script>
+
+</body>
+</html>
